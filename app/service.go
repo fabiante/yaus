@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"strings"
@@ -13,15 +14,22 @@ func NewService() *Service {
 	return &Service{}
 }
 
+var (
+	ErrInvalidUrl = errors.New("invalid url")
+)
+
+// ShortenURL shortens the given input, which must be a URL.
+//
+// ErrInvalidUrl is returned if the input is invalid.
 func (s *Service) ShortenURL(input string) (string, error) {
 	if input == "" {
-		return "", fmt.Errorf("invalid url: may not be empty")
+		return "", fmt.Errorf("%w: may not be empty", ErrInvalidUrl)
 	}
 	if len([]byte(input)) > 512 {
-		return "", fmt.Errorf("invalid url: may not be longer than 512 bytes")
+		return "", fmt.Errorf("%w: may not be longer than 512 bytes", ErrInvalidUrl)
 	}
 	if !strings.HasPrefix(input, "http") {
-		return "", fmt.Errorf("invalid url: must begin with http")
+		return "", fmt.Errorf("%w: must begin with http", ErrInvalidUrl)
 	}
 
 	// generate a random id for this url

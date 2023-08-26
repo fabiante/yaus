@@ -21,7 +21,12 @@ func (d *HTTPDriver) ShortenURL(input string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if res.StatusCode != 200 {
+	switch res.StatusCode {
+	case 200:
+		break
+	case 400:
+		return "", fmt.Errorf("invalid url (api responded with status 400)")
+	case 500:
 		return "", fmt.Errorf("unexpected status %d", res.StatusCode)
 	}
 
