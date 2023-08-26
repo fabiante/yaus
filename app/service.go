@@ -1,6 +1,10 @@
 package app
 
-import "github.com/google/uuid"
+import (
+	"fmt"
+	"github.com/google/uuid"
+	"strings"
+)
 
 type Service struct {
 }
@@ -10,9 +14,15 @@ func NewService() *Service {
 }
 
 func (s *Service) ShortenURL(input string) (string, error) {
-	// todo: validate input - users should not store random data - write test first
-
-	// todo: validate input - length should not exceed X - write test first
+	if input == "" {
+		return "", fmt.Errorf("invalid url: may not be empty")
+	}
+	if len([]byte(input)) > 512 {
+		return "", fmt.Errorf("invalid url: may not be longer than 512 bytes")
+	}
+	if !strings.HasPrefix(input, "http") {
+		return "", fmt.Errorf("invalid url: must begin with http")
+	}
 
 	// generate a random id for this url
 	id := uuid.New()
