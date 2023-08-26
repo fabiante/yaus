@@ -20,7 +20,12 @@ func NewService() *Service {
 }
 
 var (
-	ErrInvalidUrl = errors.New("invalid url")
+	ErrInvalidUrl   = errors.New("invalid url")
+	ErrInvalidShort = errors.New("invalid short")
+	// ErrNotFound communicates that a shortened url can not
+	// be resolved to the original url.
+	// It could also mean that there is simply no shortened url.
+	ErrNotFound = errors.New("short not found")
 )
 
 // ShortenURL shortens the given input, which must be a URL.
@@ -45,4 +50,26 @@ func (s *Service) ShortenURL(input string) (string, error) {
 	s.urlsLock.Unlock()
 
 	return id.String(), nil
+}
+
+// Resolve resolves the given short to the original URL.
+//
+// Returns ErrInvalidShort if the input has some invalid format.
+//
+// Returns ErrNotFound if resolving failed - meaning no original URL is found.
+func (s *Service) Resolve(short string) (string, error) {
+	id, err := uuid.Parse(short)
+	if err != nil {
+		return "", fmt.Errorf("%w: short must be an uuid", ErrInvalidShort)
+	}
+
+	s.urlsLock.RLock()
+	url, found := s.urls[id]
+	s.urlsLock.RUnlock()
+
+	if !found {
+		return "", fmt.Errorf("%w: id %s", ErrNotFound, id)
+	} else {
+		return url, nil
+	}
 }
