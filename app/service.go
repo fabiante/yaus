@@ -5,13 +5,18 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"strings"
+	"sync"
 )
 
 type Service struct {
+	urls     map[uuid.UUID]string
+	urlsLock sync.RWMutex
 }
 
 func NewService() *Service {
-	return &Service{}
+	return &Service{
+		urls: make(map[uuid.UUID]string),
+	}
 }
 
 var (
@@ -35,7 +40,9 @@ func (s *Service) ShortenURL(input string) (string, error) {
 	// generate a random id for this url
 	id := uuid.New()
 
-	// todo: actually store ID + input URL so that they can be resolved later - write test first
+	s.urlsLock.Lock()
+	s.urls[id] = input
+	s.urlsLock.Unlock()
 
 	return id.String(), nil
 }
