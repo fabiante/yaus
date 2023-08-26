@@ -11,7 +11,5 @@ func TestDirect(t *testing.T) {
 	service := app.NewService()
 	driver := drivers.NewDirectDriver(service)
 
-	t.Run("create link", func(t *testing.T) {
-		specs.CreateLink(t, driver)
-	})
+	specs.TestAll(t, driver)
 }

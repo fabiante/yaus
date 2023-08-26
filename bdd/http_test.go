@@ -16,9 +16,7 @@ func TestHTTP(t *testing.T) {
 
 	driver := drivers.NewHTTPDriver(server.URL)
 
-	t.Run("create link", func(t *testing.T) {
-		specs.CreateLink(t, driver)
-	})
+	specs.TestAll(t, driver)
 }
 
 func startTestserver() *httptest.Server {
