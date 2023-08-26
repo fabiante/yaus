@@ -8,10 +8,17 @@ import (
 
 func TestAll(t *testing.T, service Service) {
 	t.Run("feature: shortening a link link", func(t *testing.T) {
-		t.Run("given a valid URL will produce a shorter URL", func(t *testing.T) {
+		t.Run("given a valid URL will produce a shorter URL which resolves to the original", func(t *testing.T) {
+			// create a shortened link
 			input := "https://en.wikipedia.org/wiki/Go_(programming_language)#Types"
 			url, err := service.ShortenURL(input)
 			requireShortenedURL(t, err, url, input)
+
+			// use the shortened link to ensure it resolves to the original input
+			resolved, err := service.Resolve(url)
+			require.NoError(t, err)
+			require.NotEmpty(t, resolved)
+			require.Equal(t, input, resolved)
 		})
 
 		t.Run("given invalid input will error out", func(t *testing.T) {
