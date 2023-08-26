@@ -1,6 +1,7 @@
 package specs
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -13,6 +14,20 @@ func TestAll(t *testing.T, service Service) {
 			require.NoError(t, err)
 			require.NotEmpty(t, url)
 			require.Less(t, len(url), len(input)) // produce a shorter url
+		})
+
+		t.Run("given invalid input will error out", func(t *testing.T) {
+			invalid := []string{
+				"",
+				"not a url",
+			}
+
+			for i, input := range invalid {
+				t.Run(fmt.Sprintf("data[%d]", i), func(t *testing.T) {
+					_, err := service.ShortenURL(input)
+					require.ErrorContains(t, err, "invalid url")
+				})
+			}
 		})
 	})
 }
