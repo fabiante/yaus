@@ -39,6 +39,10 @@ func (d *HTTPDriver) ShortenURL(input string) (string, error) {
 	return url, nil
 }
 
+func (d *HTTPDriver) Resolve(short string) (string, error) {
+	panic("driver not yet implemented")
+}
+
 func toJSON(data any) []byte {
 	bytes, err := json.Marshal(data)
 	if err != nil {

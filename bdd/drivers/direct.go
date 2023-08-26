@@ -13,3 +13,7 @@ func NewDirectDriver(service *app.Service) *DirectDriver {
 func (d *DirectDriver) ShortenURL(input string) (string, error) {
 	return d.service.ShortenURL(input)
 }
+
+func (d *DirectDriver) Resolve(short string) (string, error) {
+	return d.service.Resolve(short)
+}
