@@ -30,7 +30,7 @@ func (d *HTTPDriver) ShortenURL(input string) (string, error) {
 		break
 	case 400:
 		return "", fmt.Errorf("invalid url (api responded with status 400)")
-	case 500:
+	default:
 		return "", fmt.Errorf("unexpected status %d", res.StatusCode)
 	}
 
