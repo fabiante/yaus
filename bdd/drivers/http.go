@@ -53,7 +53,20 @@ func (d *HTTPDriver) ShortenURL(input string) (string, error) {
 }
 
 func (d *HTTPDriver) Resolve(short string) (string, error) {
-	panic("driver not yet implemented")
+	res, err := d.client.Get(fmt.Sprintf("%s/s/%s", d.BaseURL, short))
+	if err != nil {
+		return "", err
+	}
+	switch res.StatusCode {
+	case http.StatusPermanentRedirect:
+		break
+	default:
+		return "", fmt.Errorf("unexpected status %d", res.StatusCode)
+	}
+
+	url := res.Header.Get("Location")
+
+	return url, nil
 }
 
 func toJSON(data any) []byte {
