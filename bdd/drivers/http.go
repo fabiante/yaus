@@ -14,9 +14,18 @@ type HTTPDriver struct {
 }
 
 func NewHTTPDriver(baseURL string) *HTTPDriver {
+	// Custom client which does not follow redirects - required since
+	// the API makes use of 3xx redirections.
+	client := &http.Client{
+		Transport: http.DefaultTransport,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+
 	return &HTTPDriver{
 		BaseURL: baseURL,
-		client:  http.DefaultClient,
+		client:  client,
 	}
 }
 
