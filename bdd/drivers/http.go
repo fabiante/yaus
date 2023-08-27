@@ -10,14 +10,18 @@ import (
 
 type HTTPDriver struct {
 	BaseURL string
+	client  *http.Client
 }
 
 func NewHTTPDriver(baseURL string) *HTTPDriver {
-	return &HTTPDriver{BaseURL: baseURL}
+	return &HTTPDriver{
+		BaseURL: baseURL,
+		client:  http.DefaultClient,
+	}
 }
 
 func (d *HTTPDriver) ShortenURL(input string) (string, error) {
-	res, err := http.Post(fmt.Sprintf("%s/shorten", d.BaseURL), "application/json", toJSONReader(input))
+	res, err := d.client.Post(fmt.Sprintf("%s/shorten", d.BaseURL), "application/json", toJSONReader(input))
 	if err != nil {
 		return "", err
 	}
