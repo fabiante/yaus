@@ -58,7 +58,7 @@ func (d *HTTPDriver) Resolve(short string) (string, error) {
 		return "", err
 	}
 	switch res.StatusCode {
-	case http.StatusPermanentRedirect:
+	case http.StatusFound:
 		break
 	default:
 		return "", fmt.Errorf("unexpected status %d", res.StatusCode)

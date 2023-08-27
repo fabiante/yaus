@@ -49,7 +49,7 @@ func SetupHTTPServer(api *gin.Engine, service *app.Service) *gin.Engine {
 			}
 		}
 
-		ctx.Redirect(http.StatusPermanentRedirect, shortened)
+		ctx.Redirect(http.StatusFound, shortened)
 	})
 
 	return api
